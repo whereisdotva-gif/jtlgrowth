@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JTL Growth · AI & Automation Systems</title>
+<meta name="description" content="JTL Growth builds AI and automation systems scoped to your goals. You name the outcome, we quote the build.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Archivo+Expanded:wght@500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,450;0,9..144,600;0,9..144,650;1,9..144,600;1,9..144,650&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Silk Emerald + The Vault (2026-07-21): var names kept from v1, values remapped */
+  --cement:#E3E2DE;      /* white cement base */
+  --cement-deep:#D6D5D0;
+  --navy:#0E1B18;        /* emerald-ink: dark surfaces + text on light */
+  --navy-deep:#0A1412;
+  --blue:#2F6353;        /* satin: kickers, support accents on light */
+  --blue-soft:#7FA895;   /* mist: text accents on dark */
+  --wood:#1E453B;        /* silk emerald: THE brand color */
+  --wood-deep:#122E27;
+  --wood-warm:#C6AD7C;   /* champagne: rare thread, dark-context accents */
+  --ink:#0A1412;
+  --gray:#84837D;
+  --gray-light:#B0AFA9;
+  --line:rgba(14,27,24,.14);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:var(--cement)}
+body{font-family:'Archivo',sans-serif;color:var(--navy);-webkit-font-smoothing:antialiased}
+::selection{background:var(--navy);color:var(--cement)}
+
+/* ---------- shell ---------- */
+#viewport{position:fixed;inset:0;overflow:hidden}
+#track{display:flex;height:100%;width:max-content;will-change:transform}
+.panel{width:100vw;height:100vh;flex:none;position:relative;display:flex;align-items:center;overflow:hidden}
+.inner{width:min(1380px,90vw);margin:0 auto;position:relative;z-index:2}
+
+/* ---------- type ---------- */
+.kicker{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:400;color:var(--blue);display:flex;align-items:center;gap:14px}
+.kicker::before{content:"";width:34px;height:1px;background:var(--blue)}
+h1,h2{font-family:'Fraunces',Georgia,serif;font-weight:650;line-height:1;letter-spacing:-.01em}
+h1 .accent,h2 .accent{font-style:italic}
+h1{font-size:clamp(56px,7.6vw,118px)}
+h2{font-size:clamp(42px,5.4vw,84px)}
+.lead{font-size:clamp(16px,1.35vw,20px);line-height:1.6;color:var(--gray);max-width:52ch;font-weight:400}
+
+/* ---------- nav ---------- */
+header{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:28px min(5vw,68px);mix-blend-mode:normal}
+.logo{font-family:'Archivo Expanded',sans-serif;font-weight:700;font-size:17px;letter-spacing:.02em;color:var(--navy);text-decoration:none;transition:color .5s}
+.logo span{color:var(--wood)}
+.nav-cta{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--cement);background:var(--navy);border:none;padding:13px 26px;cursor:pointer;transition:background .3s,color .5s;font-family:inherit}
+.nav-cta:hover{background:var(--wood)}
+header.on-dark .logo,header.on-dark .logo span{color:var(--cement)}
+header.on-dark .nav-cta{background:var(--cement);color:var(--navy)}
+
+/* ---------- dots + progress ---------- */
+#dots{position:fixed;bottom:34px;left:50%;transform:translateX(-50%);z-index:50;display:flex;gap:10px;align-items:center}
+#dots button{width:8px;height:8px;border-radius:50%;border:none;background:var(--gray-light);cursor:pointer;transition:all .45s cubic-bezier(.6,0,.2,1);padding:0}
+#dots button.active{width:30px;border-radius:5px;background:var(--wood)}
+#dots.on-dark button{background:rgba(232,228,221,.3)}
+#dots.on-dark button.active{background:var(--cement)}
+#counter{position:fixed;bottom:30px;right:min(5vw,68px);z-index:50;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.2em;color:var(--gray);font-weight:400;transition:color .5s}
+#counter.on-dark{color:rgba(232,228,221,.5)}
+#hint{position:fixed;bottom:30px;left:min(5vw,68px);z-index:50;font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gray);display:flex;align-items:center;gap:10px;transition:color .5s,opacity .8s}
+#hint.on-dark{color:rgba(232,228,221,.5)}
+#hint .arrow{display:inline-block;animation:nudge 2.2s ease-in-out infinite}
+@keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(7px)}}
+
+/* ---------- word reveal (stolen: word-reveal-scroll-accent) ---------- */
+.wreveal .w{color:rgba(232,228,221,.16);transition:color .45s}
+.wreveal .w.on{color:var(--cement)}
+.wreveal .w.on.tl{color:var(--wood-warm)}
+
+/* ---------- floating showcase (stolen: floating-showcase) ---------- */
+.floaters{position:absolute;inset:0;z-index:1;pointer-events:none}
+.fcard{position:absolute;will-change:transform}
+.fcard .fin{border-radius:14px;box-shadow:0 30px 60px -24px rgba(19,30,42,.4),0 6px 16px -8px rgba(19,30,42,.2);overflow:hidden;animation:float var(--d,7s) ease-in-out infinite;animation-delay:var(--dl,0s);transform:rotate(var(--r,0deg))}
+@keyframes float{0%,100%{transform:rotate(var(--r,0deg)) translateY(0)}50%{transform:rotate(var(--r,0deg)) translateY(-14px)}}
+@media(prefers-reduced-motion:reduce){.fcard .fin{animation:none}}
+.fc1{left:9%;top:17%;width:min(23vw,330px)}
+.fc1 .fin{--r:-2deg;--d:8s;background:#0E1B18;border:1px solid rgba(227,226,222,.1);padding:16px}
+.fc1 .t{font:600 10px 'Archivo';letter-spacing:.14em;text-transform:uppercase;color:rgba(232,228,221,.5)}
+.fc1 .v{font-family:'Archivo Expanded',sans-serif;font-weight:700;font-size:30px;color:var(--cement);margin:8px 0 12px}
+.fc1 .img{height:104px;border-radius:8px;background:radial-gradient(70% 90% at 70% 20%,rgba(127,168,149,.5),transparent),linear-gradient(150deg,#2F6353,#0E1B18)}
+.fc2{right:8%;top:14%;width:min(21vw,300px)}
+.fc2 .fin{--r:1.6deg;--d:9s;--dl:-2s;background:#EFEFEC;border:1px solid rgba(28,43,58,.1);padding:18px}
+.fc2 .logo{display:flex;align-items:center;gap:8px;font:600 12px 'Archivo';color:var(--navy)}
+.fc2 .logo b{width:18px;height:18px;border-radius:5px;background:linear-gradient(140deg,var(--wood),var(--wood-warm))}
+.fc2 .img{height:128px;border-radius:8px;margin-top:12px;background:radial-gradient(60% 80% at 65% 25%,#E2D3AE,transparent),linear-gradient(160deg,#C6AD7C,#7E6130)}
+.fc2 .sk{height:6px;border-radius:3px;background:rgba(28,43,58,.1);margin-top:12px}
+.fc2 .sk.s{width:55%;margin-top:8px}
+.fc3{left:13%;bottom:11%;width:min(22vw,320px)}
+.fc3 .fin{--r:-1.4deg;--d:7.5s;--dl:-4s;background:#0C1513;border:1px solid rgba(227,226,222,.08);padding:18px;color:var(--cement)}
+.fc3 .top{display:flex;gap:12px;font:600 8.5px 'Archivo';letter-spacing:.12em;text-transform:uppercase;color:rgba(232,228,221,.45)}
+.fc3 h4{font-family:'Archivo Expanded',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.01em;margin:14px 0 8px}
+.fc3 p{font-size:10.5px;color:rgba(232,228,221,.55);line-height:1.5}
+.fc3 .b{display:inline-block;margin-top:12px;background:var(--wood-warm);color:#16100B;font:600 10px 'Archivo';padding:7px 12px;border-radius:6px}
+
+/* ---------- gift copy box (stolen: copy-command) ---------- */
+.gift{margin-top:44px;max-width:520px}
+.gift .glabel{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--blue);font-weight:400;margin-bottom:12px}
+.gift .box{display:flex;align-items:center;gap:10px;background:#0E1B18;border:1px solid #1E453B;border-radius:13px;padding:12px 12px 12px 16px;box-shadow:0 14px 34px -16px rgba(0,0,0,.4)}
+.gift .cmd{font-family:'Space Mono',ui-monospace,monospace;color:#DCE5E0;font-size:12px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gift .cmd .d{color:#6E837B}
+.gift .copy{display:flex;align-items:center;gap:6px;background:#1E453B;color:#C9D6CF;border:0;border-radius:8px;padding:8px 12px;font:600 10.5px 'Archivo';letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:.18s}
+.gift .copy:hover{background:#2F6353;color:#fff}
+.gift .copy.done{color:#8FE0B0}
+
+/* ---------- reveals ---------- */
+.rv{opacity:0;transform:translateY(36px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+.panel.in .rv{opacity:1;transform:none}
+.panel.in .rv.d1{transition-delay:.08s}.panel.in .rv.d2{transition-delay:.18s}.panel.in .rv.d3{transition-delay:.28s}.panel.in .rv.d4{transition-delay:.4s}.panel.in .rv.d5{transition-delay:.52s}
+
+/* panel backgrounds are painted by the JS color morph on #viewport;
+   panels stay transparent on desktop, solid on mobile (media query below) */
+/* ================= P1 HERO ================= */
+#p1{background:transparent}
+#p1 .bignum{position:absolute;right:-2vw;bottom:-14vh;font-family:'Archivo Expanded',sans-serif;font-weight:700;font-size:46vh;color:transparent;-webkit-text-stroke:1px rgba(28,43,58,.10);user-select:none;z-index:1;line-height:1}
+#p1 .grid-lines{position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:120px 120px;opacity:.35;mask-image:radial-gradient(ellipse at 50% 45%,black 20%,transparent 75%)}
+.hero-center{text-align:center}
+.hero-center .kicker{justify-content:center}
+.hero-center .kicker::after{content:"";width:34px;height:1px;background:var(--blue)}
+.hero-center .lead{margin-left:auto;margin-right:auto}
+.hero-center .hero-meta{justify-content:center}
+.hero-center .hero-meta .m{text-align:left}
+#p1 h1 .accent{color:var(--wood)}
+#p1 h1 .thin{color:var(--blue);font-weight:500}
+.hero-meta{display:flex;gap:56px;margin-top:64px;flex-wrap:wrap}
+.hero-meta .m{border-left:2px solid var(--wood-warm);padding-left:18px}
+.hero-meta .m b{display:block;font-family:'Archivo Expanded',sans-serif;font-size:15px;font-weight:600;letter-spacing:.02em}
+.hero-meta .m span{font-size:12.5px;color:var(--gray);letter-spacing:.06em;text-transform:uppercase}
+
+/* ================= P2 SERVICES (stolen: icon-fly-in-convergence + hover-scale-cards) ================= */
+#p2{background:transparent}
+#p2 .inner{text-align:center}
+#p2 .kicker{justify-content:center}
+#p2 .kicker::after{content:"";width:34px;height:1px;background:var(--blue)}
+#p2 .lead{margin:26px auto 0}
+.svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(14px,1.6vw,24px);margin-top:56px}
+.svc-card{background:rgba(255,255,255,.5);border:1px solid var(--line);border-radius:18px;padding:30px 24px 32px;text-align:left;will-change:transform,opacity;transition:box-shadow .3s,border-color .3s;box-shadow:0 2px 10px -8px rgba(28,43,58,.25)}
+.svc-card:hover{box-shadow:0 24px 46px -24px rgba(28,43,58,.45);border-color:rgba(28,43,58,.22)}
+.svc-card .ico{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:22px;color:var(--cement);background:linear-gradient(140deg,var(--navy),var(--blue));margin-bottom:20px}
+.svc-card:nth-child(even) .ico{background:linear-gradient(140deg,var(--wood),var(--wood-warm))}
+.svc-card h3{font-family:'Archivo Expanded',sans-serif;font-size:clamp(16px,1.35vw,20px);font-weight:600;letter-spacing:-.01em}
+.svc-card .tag{display:block;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);margin:8px 0 12px}
+.svc-card p{font-size:13.5px;line-height:1.6;color:var(--gray)}
+
+/* ================= P3 PROCESS (wood) ================= */
+#p3{background:transparent;color:var(--cement)}
+#p3::after{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(93deg,rgba(0,0,0,.13) 0 2px,transparent 2px 90px),
+  repeating-linear-gradient(91deg,rgba(255,255,255,.025) 0 1px,transparent 1px 34px);
+  opacity:.8;pointer-events:none}
+#p3 .kicker{color:var(--cement)}#p3 .kicker::before{background:var(--wood-warm)}
+#p3 .lead{color:rgba(232,228,221,.62)}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:60px}
+.step{background:rgba(0,0,0,.22);padding:34px 28px 40px;position:relative;transition:background .35s,transform .35s}
+.step:hover{background:rgba(0,0,0,.36);transform:translateY(-6px)}
+.step .sn{font-family:'Space Mono',monospace;font-size:12px;color:var(--wood-warm);font-weight:400;letter-spacing:.2em}
+.step h3{font-family:'Archivo Expanded',sans-serif;font-size:21px;font-weight:600;margin:16px 0 12px}
+.step p{font-size:13.5px;line-height:1.6;color:rgba(232,228,221,.6)}
+.quote-note{margin-top:44px;display:inline-flex;align-items:center;gap:16px;border:1px solid rgba(232,228,221,.25);padding:18px 26px;font-size:14px;letter-spacing:.02em;color:rgba(232,228,221,.85)}
+.quote-note b{color:var(--cement)}
+.quote-note .dot{width:7px;height:7px;border-radius:50%;background:var(--wood-warm);flex:none}
+
+/* ================= P4 PROOF (navy) ================= */
+#p4{background:transparent;color:var(--cement)}
+#p4::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(232,228,221,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(232,228,221,.05) 1px,transparent 1px);background-size:110px 110px;mask-image:radial-gradient(ellipse at 75% 30%,black 10%,transparent 70%);pointer-events:none}
+#p4 .kicker{color:var(--blue-soft)}#p4 .kicker::before{background:var(--blue-soft)}
+#p4 .inner{display:grid;grid-template-columns:1.15fr 1fr;gap:6vw;align-items:center}
+#p4 .lead{color:rgba(232,228,221,.6)}
+.proof-stats{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.pstat{background:rgba(232,228,221,.06);padding:32px 28px;transition:background .35s}
+.pstat:hover{background:rgba(232,228,221,.11)}
+.pstat b{display:block;font-family:'Archivo Expanded',sans-serif;font-size:clamp(30px,2.6vw,42px);font-weight:700;letter-spacing:-.02em;color:var(--cement)}
+.pstat b em{font-style:normal;color:var(--wood-warm)}
+.pstat span{font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:rgba(232,228,221,.5);display:block;margin-top:8px;line-height:1.5}
+.receipt{margin-top:34px;font-size:13.5px;line-height:1.7;color:rgba(232,228,221,.55);border-left:2px solid var(--wood-warm);padding-left:20px;max-width:50ch}
+
+/* ================= P5 WORK (phones) ================= */
+#pwork{background:transparent}
+#pwork .inner{width:min(1380px,92vw)}
+.phones{display:flex;gap:clamp(14px,1.6vw,26px);margin-top:54px;align-items:flex-start}
+.phone{flex:1;aspect-ratio:390/780;background:#0D1714;border-radius:clamp(22px,2.2vw,34px);border:1px solid rgba(30,69,59,.35);outline:5px solid #080F0D;position:relative;overflow:hidden;padding:clamp(12px,1.2vw,18px);box-shadow:0 30px 60px -30px rgba(10,20,18,.5)}
+.phone .head{font-family:'Archivo Expanded',sans-serif;font-weight:700;font-size:clamp(13px,1.05vw,17px);color:var(--cement)}
+.phone .head em{font-style:normal;color:var(--wood-warm)}
+.phone .sub{font-size:clamp(9.5px,.78vw,11.5px);color:rgba(232,228,221,.45);margin-top:4px;letter-spacing:.04em}
+.phone .feed{display:flex;flex-direction:column;gap:clamp(8px,.8vw,12px);margin-top:clamp(16px,1.6vw,24px)}
+.phone .msg{background:#14231F;border:1px solid rgba(227,226,222,.07);border-radius:12px 12px 12px 3px;padding:clamp(8px,.9vw,12px) clamp(10px,1vw,14px);font-size:clamp(10px,.82vw,12.5px);line-height:1.5;color:rgba(227,226,222,.8);opacity:0;transform:translateY(14px);will-change:transform,opacity}
+.phone .msg.me{background:#1B3A32;border-radius:12px 12px 3px 12px;align-self:flex-end;color:var(--cement)}
+.phone .msg b{color:var(--wood-warm);font-weight:600}
+.phone .msg .t{display:block;font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.08em;color:rgba(227,226,222,.35);margin-top:5px}
+
+/* ================= P6 CONTACT ================= */
+#p5{background:transparent}
+#p5 .inner{text-align:left}
+#p5 h2 .accent{color:var(--wood)}
+.contact-row{display:flex;align-items:flex-end;justify-content:space-between;gap:6vw;flex-wrap:wrap}
+.big-cta{display:inline-flex;align-items:center;gap:22px;margin-top:56px;background:var(--navy);color:var(--cement);text-decoration:none;font-family:'Archivo Expanded',sans-serif;font-weight:600;font-size:clamp(17px,1.5vw,22px);padding:28px 44px;transition:background .35s,gap .35s}
+.big-cta:hover{background:var(--wood);gap:34px}
+.big-cta .arr{font-family:'Archivo',sans-serif;font-weight:400}
+.contact-side{font-size:13.5px;line-height:2;color:var(--gray);letter-spacing:.03em}
+.contact-side a{color:var(--navy);text-decoration:none;border-bottom:1px solid var(--wood-warm)}
+.footline{position:absolute;bottom:96px;left:0;right:0}
+.footline .inner{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gray-light)}
+
+/* ---------- mobile: vertical fallback ---------- */
+@media (max-width:860px){
+  html,body{overflow:auto;height:auto}
+  #p1,#p5{background:var(--cement)}
+  #p2{background:var(--cement-deep)}
+  #p3{background:linear-gradient(160deg,var(--wood) 0%,var(--wood-deep) 100%)}
+  #p4{background:linear-gradient(150deg,var(--navy) 0%,var(--navy-deep) 100%)}
+  #viewport{position:static;overflow:visible}
+  #track{display:block;width:100%;transform:none!important}
+  .panel{width:100%;height:auto;min-height:100svh;padding:110px 0 90px}
+  .panel .rv{opacity:1;transform:none}
+  #dots,#counter,#hint{display:none}
+  #p2 .inner,#p4 .inner{grid-template-columns:1fr;gap:48px}
+  .steps{grid-template-columns:1fr 1fr}
+  .footline{position:static;margin-top:70px}
+  #p1 .bignum{font-size:24vh}
+  .floaters{display:none}
+  .phones{flex-wrap:wrap}
+  .phone{flex:1 1 44%}
+  .phone .msg{opacity:1!important;transform:none!important}
+  .svc-card{opacity:1!important;transform:none!important}
+  .svc-grid{grid-template-columns:1fr 1fr}
+  .wreveal .w{color:inherit}
+}
+</style>
+</head>
+<body>
+
+<header id="hdr">
+  <a class="logo" href="#" data-go="0">JTL<span>&nbsp;GROWTH</span></a>
+  <button class="nav-cta" data-go="5">Request a Quote</button>
+</header>
+
+<div id="viewport">
+<div id="track">
+
+  <!-- 1 · HERO -->
+  <section class="panel in" id="p1">
+    <div class="grid-lines"></div>
+    <div class="floaters rv d4">
+      <div class="fcard fc1"><div class="fin">
+        <div class="t">Ops Dashboard</div><div class="v">Live</div><div class="img"></div>
+      </div></div>
+      <div class="fcard fc2"><div class="fin">
+        <div class="logo"><b></b>Client Portal</div><div class="img"></div><div class="sk"></div><div class="sk s"></div>
+      </div></div>
+      <div class="fcard fc3"><div class="fin">
+        <div class="top"><span>Systems</span><span>Agents</span><span>Funnels</span></div>
+        <h4>Your ops, automated.</h4>
+        <p>AI employees handling the repetitive half, around the clock.</p>
+        <span class="b">Running 24/7</span>
+      </div></div>
+    </div>
+    <div class="inner hero-center">
+      <div class="kicker rv">AI &amp; Automation Agency · PH · US · EU</div>
+      <h1 style="margin-top:28px">
+        <span class="rv d1">Growth, </span><span class="rv d2 accent">engineered.</span>
+      </h1>
+      <p class="lead rv d3" style="margin-top:32px">We design and install AI systems that run the repetitive half of your business, so you scale output without adding headcount.</p>
+      <div class="hero-meta rv d4">
+        <div class="m"><b>AI Employees</b><span>Working 24/7</span></div>
+        <div class="m"><b>Automation Systems</b><span>Built to spec</span></div>
+        <div class="m"><b>Quoted on outcomes</b><span>No fixed packages</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · WHAT WE BUILD -->
+  <section class="panel" id="p2">
+    <div class="inner">
+      <div class="kicker rv">What we build</div>
+      <h2 class="rv d1" style="margin-top:24px">Systems, not software.</h2>
+      <p class="lead rv d2">Everything we ship plugs into how you already work. You keep your tools. We make them run themselves.</p>
+      <div class="svc-grid">
+        <div class="svc-card" data-tx="-260" data-ty="-120" data-r="-7">
+          <div class="ico">◈</div><h3>AI Employees</h3><span class="tag">Agents</span>
+          <p>Trained AI agents that answer, qualify, draft, and follow up inside your inbox, chat, and CRM.</p>
+        </div>
+        <div class="svc-card" data-tx="-90" data-ty="180" data-r="5">
+          <div class="ico">⚙</div><h3>Automation Systems</h3><span class="tag">Workflows</span>
+          <p>End-to-end workflows that connect your tools and remove the manual steps between lead and payment.</p>
+        </div>
+        <div class="svc-card" data-tx="110" data-ty="-190" data-r="6">
+          <div class="ico">▲</div><h3>Funnels &amp; Websites</h3><span class="tag">Acquisition</span>
+          <p>Landing pages and funnels engineered to convert. Built, tracked, and iterated for you.</p>
+        </div>
+        <div class="svc-card" data-tx="280" data-ty="130" data-r="-5">
+          <div class="ico">▦</div><h3>Ops Portals &amp; Dashboards</h3><span class="tag">Visibility</span>
+          <p>One screen where you see your whole operation: tasks, clients, numbers, live.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · HOW WE WORK -->
+  <section class="panel" id="p3">
+    <div class="inner">
+      <div class="kicker rv">How we work</div>
+      <h2 class="rv d1 wreveal" data-accent="goal.,deliverables." style="margin-top:24px">Scoped to your goal.<br>Quoted on deliverables.</h2>
+      <div class="steps">
+        <div class="step rv d1"><div class="sn">STEP 01</div><h3>Discover</h3><p>A working session on your operation. We find where hours and leads are leaking.</p></div>
+        <div class="step rv d2"><div class="sn">STEP 02</div><h3>Blueprint</h3><p>A fixed-scope build plan: exact deliverables, timeline, and one quote. No surprises after.</p></div>
+        <div class="step rv d3"><div class="sn">STEP 03</div><h3>Build</h3><p>We install the system in weeks, not months. Tested on real work before handover.</p></div>
+        <div class="step rv d4"><div class="sn">STEP 04</div><h3>Run</h3><p>We operate, monitor, and improve it. Your system gets sharper every month.</p></div>
+      </div>
+      <div class="quote-note rv d5"><span class="dot"></span><span>No price list. <b>Every quote is scoped to your deliverables and goals</b>. You pay for outcomes, not packages.</span></div>
+    </div>
+  </section>
+
+  <!-- 4 · PROOF -->
+  <section class="panel" id="p4">
+    <div class="inner">
+      <div>
+        <div class="kicker rv">Why trust us</div>
+        <h2 class="rv d1 wreveal" data-accent="own,systems." style="margin-top:24px">We run our own company on these systems.</h2>
+        <p class="lead rv d2" style="margin-top:26px">This isn't theory we resell. Our own operation runs on a multi-agent AI team, the same architecture we install for clients.</p>
+        <p class="receipt rv d3">Live client systems in the Philippines and Europe. White-label delivery for international agencies. Funnels, portals, and AI operations shipped and earning before we ever offered them to you.</p>
+      </div>
+      <div class="proof-stats">
+        <div class="pstat rv d1"><b>15<em>+</em></b><span>AI agents running our own ops daily</span></div>
+        <div class="pstat rv d2"><b>3</b><span>Markets served: PH · US · EU</span></div>
+        <div class="pstat rv d3"><b>24<em>/7</em></b><span>Systems working while you sleep</span></div>
+        <div class="pstat rv d4"><b>100<em>%</em></b><span>Builds tested on real work before handover</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · WORK (phones, sheet-pull scrub) -->
+  <section class="panel" id="pwork">
+    <div class="inner">
+      <div class="kicker rv">Shipped work</div>
+      <h2 class="rv d1" style="margin-top:24px">Real systems,<br>in real businesses.</h2>
+      <div class="phones">
+        <!-- draft copy: honest system-activity feeds, client quotes slot in after consent -->
+        <div class="phone"><div class="head">Ops<em>.</em>Portal</div><div class="sub">Client operations portal</div>
+          <div class="feed">
+            <div class="msg">Task board synced for the whole team<span class="t">7:00 AM</span></div>
+            <div class="msg me">EOD report generated and filed<span class="t">6:02 PM</span></div>
+            <div class="msg">AI assistant answered a client question<span class="t">9:41 PM</span></div>
+            <div class="msg me"><b>Status:</b> Live, used daily<span class="t">NOW</span></div>
+          </div></div>
+        <div class="phone"><div class="head">Lead<em>.</em>Funnel</div><div class="sub">Launch recovery funnel</div>
+          <div class="feed">
+            <div class="msg">New checkout abandoned. Follow-up queued<span class="t">2:14 AM</span></div>
+            <div class="msg me">Recovery email sent automatically<span class="t">2:19 AM</span></div>
+            <div class="msg">Buyer returned and completed order<span class="t">8:33 AM</span></div>
+            <div class="msg me"><b>Status:</b> Earning<span class="t">NOW</span></div>
+          </div></div>
+        <div class="phone"><div class="head">White<em>.</em>Label</div><div class="sub">EU agency backend</div>
+          <div class="feed">
+            <div class="msg">Client work delivered under partner brand<span class="t">MON</span></div>
+            <div class="msg me">Monthly retainer, renewed<span class="t">1st</span></div>
+            <div class="msg">Zero missed handoffs this cycle<span class="t">FRI</span></div>
+            <div class="msg me"><b>Market:</b> Europe<span class="t">NOW</span></div>
+          </div></div>
+        <div class="phone"><div class="head">AI<em>.</em>Team</div><div class="sub">Multi-agent staff</div>
+          <div class="feed">
+            <div class="msg">Research brief compiled overnight<span class="t">3:12 AM</span></div>
+            <div class="msg me">Copy drafted, sent to QA gate<span class="t">4:05 AM</span></div>
+            <div class="msg">Books reconciled by finance agent<span class="t">8:30 AM</span></div>
+            <div class="msg me"><b>15+ agents,</b> 24/7<span class="t">NOW</span></div>
+          </div></div>
+        <div class="phone"><div class="head">Sites<em>.</em>Pages</div><div class="sub">Pages that convert</div>
+          <div class="feed">
+            <div class="msg">Landing page shipped for a coach<span class="t">TUE</span></div>
+            <div class="msg me">Forms and automations tested live<span class="t">TUE</span></div>
+            <div class="msg">Course site published<span class="t">THU</span></div>
+            <div class="msg me"><b>Turnaround:</b> days<span class="t">NOW</span></div>
+          </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · CONTACT -->
+  <section class="panel" id="p5">
+    <div class="inner">
+      <div class="kicker rv">Start here</div>
+      <div class="contact-row">
+        <div>
+          <h2 class="rv d1" style="margin-top:24px">Tell us the goal.<br><span class="accent">We'll quote the system.</span></h2>
+          <a class="big-cta rv d2" href="mailto:hello@jtlgrowth.com?subject=Quote%20request%3A%20tell%20us%20your%20goal">Request a Quote <span class="arr">→</span></a>
+          <div class="gift rv d3">
+            <div class="glabel">A gift before you go</div>
+            <div class="box">
+              <span class="cmd"><span class="d">›</span> Run our free 60-second AI audit prompt on your business</span>
+              <button class="copy" id="giftcopy">Copy ⧉</button>
+            </div>
+          </div>
+        </div>
+        <div class="contact-side rv d3">
+          <div>hello@jtlgrowth.com</div>
+          <div>Philippines, serving PH, US &amp; EU</div>
+          <div><a href="#" data-go="1">See what we build</a></div>
+        </div>
+      </div>
+    </div>
+    <div class="footline"><div class="inner"><span>© 2026 JTL Growth</span><span>AI &amp; Automation Systems</span></div></div>
+  </section>
+
+</div>
+</div>
+
+<div id="dots" role="tablist" aria-label="Sections"></div>
+<div id="counter">01 / 06</div>
+<div id="hint"><span>Scroll</span><span class="arrow">→</span></div>
+
+<script>
+(function(){
+  const track=document.getElementById('track');
+  const panels=[...document.querySelectorAll('.panel')];
+  const dotsEl=document.getElementById('dots');
+  const counter=document.getElementById('counter');
+  const hint=document.getElementById('hint');
+  const hdr=document.getElementById('hdr');
+  const N=panels.length;
+  const darkPanels=[2,3]; // wood + navy
+  let target=0,current=0,idx=0,raf=null,moved=false;
+  const mobile=()=>matchMedia('(max-width:860px)').matches;
+
+  // dots
+  panels.forEach((_,i)=>{
+    const b=document.createElement('button');
+    b.setAttribute('aria-label','Section '+(i+1));
+    b.addEventListener('click',()=>goTo(i));
+    dotsEl.appendChild(b);
+  });
+  const dots=[...dotsEl.children];
+
+  // virtual scroll map: transit segments slide the track, HOLD segments pin the
+  // panel while extra scrolling scrubs its inner effect (words, phone feeds)
+  const HOLD={2:0.7,3:0.7,4:1.4}; // panel idx -> extra scroll depth in viewport-widths
+  const segs=[];const arriveV=[0];let vlen=0;
+  for(let i=1;i<N;i++){
+    segs.push({t:'move',from:vlen,len:1,i});vlen+=1;arriveV[i]=vlen;
+    if(HOLD[i]){segs.push({t:'hold',from:vlen,len:HOLD[i],i});vlen+=HOLD[i]}
+  }
+  function mapU(u){ // u = virtual position in vw units -> real track x + per-panel scrubs
+    let xu=0;const scrub={},move={};
+    for(const s of segs){
+      const p=Math.max(0,Math.min(1,(u-s.from)/s.len));
+      if(s.t==='move'){xu+=p;move[s.i]=p}else scrub[s.i]=p;
+    }
+    return {xu,scrub,move};
+  }
+  function maxX(){return vlen*innerWidth}
+  function goTo(i){i=Math.max(0,Math.min(N-1,i));target=arriveV[i]*innerWidth;kick()}
+  document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();if(mobile()){panels[+el.dataset.go].scrollIntoView({behavior:'smooth'})}else{goTo(+el.dataset.go)}}));
+
+  function setUI(i){
+    if(i===idx)return; idx=i;
+    dots.forEach((d,k)=>d.classList.toggle('active',k===i));
+    counter.textContent=String(i+1).padStart(2,'0')+' / '+String(N).padStart(2,'0');
+    panels.forEach((p,k)=>p.classList.toggle('in',k===i));
+    const dark=darkPanels.includes(i);
+    [hdr,dotsEl,counter,hint].forEach(el=>el.classList.toggle('on-dark',dark));
+  }
+  dots[0].classList.add('active');
+  counter.textContent='01 / '+String(N).padStart(2,'0');
+
+  // scroll-driven background morph (stolen: bg-color-morph-scroll — direct
+  // per-frame backgroundColor set, no CSS transition, lerped between stops)
+  const viewport=document.getElementById('viewport');
+  const STOPS=[[227,226,222],[214,213,208],[23,54,45],[14,27,24],[214,213,208],[227,226,222]];
+  const lerp=(a,b,t)=>a+(b-a)*t;
+  function paintBg(x){
+    const p=Math.max(0,Math.min(N-1,x/innerWidth));
+    const s=Math.min(N-2,Math.floor(p)),f=p-s;
+    const c=STOPS[s].map((v,i)=>Math.round(lerp(v,STOPS[s+1][i],f)));
+    viewport.style.backgroundColor='rgb('+c[0]+','+c[1]+','+c[2]+')';
+  }
+  paintBg(0);
+
+  // word reveal (stolen: word-reveal-scroll-accent) — split into spans,
+  // reveal count driven by horizontal progress into the owning panel
+  const reveals=[...document.querySelectorAll('.wreveal')].map(el=>{
+    const accents=new Set((el.dataset.accent||'').split(','));
+    const words=[];
+    [...el.childNodes].forEach(node=>{
+      if(node.nodeType!==3)return; // keep <br> etc.
+      const frag=document.createDocumentFragment();
+      node.textContent.split(/\s+/).filter(Boolean).forEach((word,i,arr)=>{
+        const s=document.createElement('span');
+        s.className='w'+(accents.has(word)?' tl':'');
+        s.textContent=word;words.push(s);frag.appendChild(s);
+        if(i<arr.length-1)frag.appendChild(document.createTextNode(' '));
+      });
+      el.replaceChild(frag,node);
+    });
+    return {words,idx:panels.indexOf(el.closest('.panel'))};
+  });
+
+  // services fly-in (stolen: icon-fly-in-convergence) — scatter offsets converge on entry
+  const svcIdx=panels.indexOf(document.getElementById('p2'));
+  const svcCards=[...document.querySelectorAll('.svc-card')];
+
+  // phones: activity feed messages reveal one by one across all phones
+  const workIdx=panels.indexOf(document.getElementById('pwork'));
+  const feedMsgs=[...document.querySelectorAll('#pwork .phone')].flatMap(ph=>[...ph.querySelectorAll('.msg')]);
+
+  const clamp01=v=>Math.max(0,Math.min(1,v));
+  function fx(m){
+    const pos=m.xu;
+    reveals.forEach(r=>{
+      // panels with a hold zone reveal on the user's own scroll, not on arrival
+      const pr=HOLD[r.idx]!=null?(m.scrub[r.idx]||0):clamp01(pos-(r.idx-1));
+      const on=Math.round(pr*r.words.length);
+      r.words.forEach((w,i)=>w.classList.toggle('on',i<on));
+    });
+    const qs=clamp01(pos-(svcIdx-1));
+    svcCards.forEach(c=>{
+      const e=1-qs;
+      c.style.transform='translate('+(c.dataset.tx*e)+'px,'+(c.dataset.ty*e)+'px) rotate('+(c.dataset.r*e)+'deg) scale('+(0.6+0.4*qs)+')';
+      c.style.opacity=qs;
+    });
+    const q=m.scrub[workIdx]||0;
+    feedMsgs.forEach((m2,k)=>{
+      const o=clamp01(q*(feedMsgs.length+2)-k*1.02);
+      m2.style.opacity=o;
+      m2.style.transform='translateY('+(14*(1-o))+'px)';
+    });
+  }
+
+  fx(mapU(0));
+
+  // gift copy (stolen: copy-command) — mockup prompt for now
+  const gift=document.getElementById('giftcopy');
+  const GIFT_TEXT='You are an operations auditor. Ask me 5 questions about my business, then list the 3 workflows I should automate first, with the hours each one is costing me per week.';
+  gift.addEventListener('click',async()=>{
+    try{await navigator.clipboard.writeText(GIFT_TEXT)}catch(e){}
+    gift.classList.add('done');gift.textContent='Copied ✓';
+    setTimeout(()=>{gift.classList.remove('done');gift.textContent='Copy ⧉'},1500);
+  });
+
+  function kick(){if(!raf)raf=requestAnimationFrame(loop)}
+  function loop(){
+    current+=(target-current)*0.085;
+    if(Math.abs(target-current)<.4){current=target}
+    const m=mapU(current/innerWidth);
+    track.style.transform='translate3d('+(-m.xu*innerWidth)+'px,0,0)';
+    paintBg(m.xu*innerWidth);
+    fx(m);
+    setUI(Math.round(m.xu));
+    if(current===target){raf=null;return}
+    raf=requestAnimationFrame(loop);
+  }
+
+  // wheel → horizontal
+  addEventListener('wheel',e=>{
+    if(mobile())return;
+    e.preventDefault();
+    const d=Math.abs(e.deltaY)>Math.abs(e.deltaX)?e.deltaY:e.deltaX;
+    target=Math.max(0,Math.min(maxX(),target+d*1.15));
+    if(!moved&&target>60){moved=true;hint.style.opacity=0}
+    kick();
+  },{passive:false});
+
+  // keys
+  addEventListener('keydown',e=>{
+    if(mobile())return;
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ')goTo(idx+1);
+    if(e.key==='ArrowLeft'||e.key==='PageUp')goTo(idx-1);
+  });
+
+  // touch (desktop-width touch devices)
+  let tx=0;
+  addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+  addEventListener('touchmove',e=>{
+    if(mobile())return;
+    const dx=tx-e.touches[0].clientX;tx=e.touches[0].clientX;
+    target=Math.max(0,Math.min(maxX(),target+dx*2));kick();
+  },{passive:true});
+
+  // idle snap: in a transit segment snap to the nearest panel arrival;
+  // inside a hold zone stay put so the user can scrub freely
+  let snapT;addEventListener('wheel',()=>{clearTimeout(snapT);snapT=setTimeout(()=>{
+    const u=target/innerWidth;
+    const s=segs.find(s=>u>s.from&&u<s.from+s.len);
+    if(!s||s.t==='move'){
+      let best=0,bd=1e9;
+      arriveV.forEach(v=>{const d=Math.abs(v-u);if(d<bd){bd=d;best=v}});
+      target=best*innerWidth;kick();
+    }
+  },380)},{passive:true});
+
+  addEventListener('resize',()=>{goTo(idx);current=target;kick()});
+})();
+</script>
+</body>
+</html>
