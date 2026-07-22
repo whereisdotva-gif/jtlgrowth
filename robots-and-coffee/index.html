@@ -84,7 +84,7 @@ nav{
 .hero-ctas{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
 .btn{
   font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;letter-spacing:.04em;
-  padding:17px 36px;border-radius:100px;display:inline-block;transition:transform .25s,box-shadow .25s,background .25s,color .25s;
+  padding:17px 36px;border-radius:100px;display:inline-block;cursor:pointer;transition:transform .25s,box-shadow .25s,background .25s,color .25s;
 }
 .btn-rose{background:linear-gradient(120deg,var(--rose),var(--chili));color:#fff}
 .btn-rose:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(245,30,124,.35)}
@@ -201,6 +201,10 @@ nav{
 }
 .form-row input:focus{border-color:var(--rose)}
 .form-note{font-size:13px;color:var(--cocoa);margin-top:18px}
+.offer-chip{display:none;margin:0 auto 22px;max-width:560px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;letter-spacing:.04em;color:var(--rose-deep);background:#fff;border:1px solid rgba(245,30,124,.35);border-radius:100px;padding:9px 20px;width:fit-content}
+.offer-chip.show{display:block}
+.form-success{display:none;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;color:var(--rose-deep);margin-top:18px}
+.form-success.show{display:block}
 
 /* FOUNDERS */
 .founders-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
@@ -307,14 +311,14 @@ footer{background:var(--espresso);color:var(--cream);padding:60px 0 50px}
         <h3>Prompt Vault</h3>
         <p>Our working prompts for sales, content, and admin. Copy, paste, done.</p>
         <div class="price"><b>₱1,200</b><span>/ $22</span></div>
-        <a href="#updates" class="btn btn-ghost">Get the Vault</a>
+        <a href="#updates" class="btn btn-ghost" data-offer="Prompt Vault (₱1,200)">Get the Vault</a>
       </div>
       <div class="card reveal">
         <span class="tag">Blueprint</span>
         <h3>Lead Engine Blueprint</h3>
         <p>The exact system we use to find and warm up leads, step by step.</p>
         <div class="price"><b>₱2,500</b><span>/ $45</span></div>
-        <a href="#updates" class="btn btn-ghost">Get the Blueprint</a>
+        <a href="#updates" class="btn btn-ghost" data-offer="Lead Engine Blueprint (₱2,500)">Get the Blueprint</a>
       </div>
       <div class="card reveal">
         <span class="tag">Course · Video + Guide</span>
@@ -322,14 +326,14 @@ footer{background:var(--espresso);color:var(--cream);padding:60px 0 50px}
         <h3>Build Your AI Team</h3>
         <p>We teach you to set up your own AI staff. Video lessons plus a written guide.</p>
         <div class="price"><b>₱20,000</b><span>/ $360</span></div>
-        <a href="#updates" class="btn btn-ghost">Join the waitlist</a>
+        <a href="#updates" class="btn btn-ghost" data-offer="Build Your AI Team waitlist">Join the waitlist</a>
       </div>
       <div class="card reveal">
         <span class="tag">1-on-1</span>
         <h3>Mentorship Call</h3>
         <p>One hour with us on anything AI in your business. Ask, learn, leave with answers.</p>
         <div class="price"><b>₱5,000</b><span>/ $90</span></div>
-        <a href="#updates" class="btn btn-ghost">Book a call</a>
+        <a href="#updates" class="btn btn-ghost" data-offer="Mentorship Call (₱5,000)">Book a call</a>
       </div>
     </div>
   </div>
@@ -347,7 +351,7 @@ footer{background:var(--espresso);color:var(--cream);padding:60px 0 50px}
           <div><b>Novel Hotel, BGC</b><span>Taguig</span></div>
           <div><b>50 seats</b><span>per batch</span></div>
         </div>
-        <a href="#updates" class="btn btn-rose">Reserve a seat</a>
+        <a href="#updates" class="btn btn-rose" data-offer="The AI Takeover · Aug 22-23">Reserve a seat</a>
       </div>
       <div class="takeover-r">
         <div class="tier"><span>Regular</span><b>₱25,000</b></div>
@@ -365,13 +369,13 @@ footer{background:var(--espresso);color:var(--cream);padding:60px 0 50px}
       <span class="tag">Mentorship</span>
       <h3>Ask us anything, 1-on-1</h3>
       <p style="margin:14px 0 0">Stuck on a tool, a workflow, or where to even start? Book a Mentorship Call and get straight answers for your exact business. ₱5,000 per session.</p>
-      <div style="margin-top:30px"><a href="#updates" class="btn btn-ghost">Book a Mentorship Call</a></div>
+      <div style="margin-top:30px"><a href="#updates" class="btn btn-ghost" data-offer="Mentorship Call (₱5,000)">Book a Mentorship Call</a></div>
     </div>
     <div class="card reveal">
       <span class="tag">The Community</span>
       <h3>Robots &amp; Coffee Circle</h3>
       <p style="margin:14px 0 0">A three-month room with us and other owners putting AI to work. Workshops, templates, and help when you need it. By application.</p>
-      <div style="margin-top:30px"><a href="#updates" class="btn btn-ghost">Apply to join</a></div>
+      <div style="margin-top:30px"><a href="#updates" class="btn btn-ghost" data-offer="Robots &amp; Coffee Circle">Apply to join</a></div>
     </div>
   </div>
 </section>
@@ -383,11 +387,13 @@ footer{background:var(--espresso);color:var(--cream);padding:60px 0 50px}
       <h2>AI news you can <em>use.</em></h2>
       <p>One short email a week. What changed in AI, and what to do about it in your business. Plain words, no hype.</p>
     </div>
-    <form class="form-row reveal" onsubmit="event.preventDefault();this.querySelector('input').value='';alert('Salamat! You are on the list.')">
-      <input type="email" placeholder="Your email" required>
-      <button type="submit" class="btn btn-rose" style="border:none;cursor:pointer">Get the updates</button>
+    <p class="offer-chip" id="offer-chip"></p>
+    <form class="form-row reveal" id="signup-form">
+      <input type="email" id="signup-email" placeholder="Your email" required>
+      <button type="submit" class="btn btn-rose" style="border:none">Get the updates</button>
     </form>
-    <p class="form-note">Free forever. Unsubscribe anytime.</p>
+    <p class="form-note" id="form-note">Free forever. Unsubscribe anytime.</p>
+    <p class="form-success" id="form-success">Salamat! You are on the list. We will email you about it soon.</p>
   </div>
 </section>
 
@@ -429,6 +435,26 @@ footer{background:var(--espresso);color:var(--cream);padding:60px 0 50px}
 <script>
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// Offer buttons: carry the offer down to the signup and focus the email box
+const chip=document.getElementById('offer-chip');
+document.querySelectorAll('[data-offer]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    chip.textContent='You are asking about: '+btn.dataset.offer;
+    chip.classList.add('show');
+    setTimeout(()=>document.getElementById('signup-email').focus({preventScroll:true}),600);
+  });
+});
+
+// Inline success instead of a blocking alert
+document.getElementById('signup-form').addEventListener('submit',e=>{
+  e.preventDefault();
+  const input=document.getElementById('signup-email');
+  if(!input.checkValidity()){input.reportValidity();return}
+  input.value='';
+  document.getElementById('form-note').style.display='none';
+  document.getElementById('form-success').classList.add('show');
+});
 </script>
 </body>
 </html>
