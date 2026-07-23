@@ -128,6 +128,7 @@ header.on-dark .nav-cta{background:var(--cement);color:var(--navy)}
 .fcard{position:absolute;will-change:transform}
 .fcard .fin{border-radius:14px;box-shadow:0 30px 60px -24px rgba(29,29,29,.4),0 6px 16px -8px rgba(29,29,29,.2);overflow:hidden;animation:float var(--d,7s) ease-in-out infinite;animation-delay:var(--dl,0s);transform:rotate(var(--r,0deg))}
 @keyframes float{0%,100%{transform:rotate(var(--r,0deg)) translateY(0)}50%{transform:rotate(var(--r,0deg)) translateY(-14px)}}
+.fcard{transition:translate 1.1s cubic-bezier(.16,1,.3,1)}
 @media(prefers-reduced-motion:reduce){.fcard .fin{animation:none}}
 .fc1{left:9%;top:17%;width:min(23vw,330px)}
 .fc1 .fin{--r:-2deg;--d:8s;background:#181818;border:1px solid rgba(226,226,226,.1);padding:16px}
@@ -1003,6 +1004,25 @@ header.on-dark :focus-visible,.dark :focus-visible{outline-color:#B9B9B9}
     });
     st.addEventListener('mouseleave',()=>{ph.style.transform='rotateY(-14deg) rotateX(4deg)'});
   })();
+</script>
+<script>
+(function(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches || matchMedia('(pointer: coarse)').matches) return;
+  var cards=[].slice.call(document.querySelectorAll('.fcard'));
+  if(!cards.length) return;
+  var raf=null;
+  addEventListener('mousemove',function(e){
+    if(raf) return;
+    raf=requestAnimationFrame(function(){
+      raf=null;
+      var nx=e.clientX/innerWidth-.5, ny=e.clientY/innerHeight-.5;
+      cards.forEach(function(c,i){
+        var depth=(i%2? -1:1)*(8+i*4); /* alternate direction, varied depth */
+        c.style.translate=(-nx*depth)+'px '+(-ny*depth)+'px';
+      });
+    });
+  },{passive:true});
+})();
 </script>
 </body>
 </html>
